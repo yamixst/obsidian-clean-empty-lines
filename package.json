@@ -15,7 +15,7 @@
     "formatter",
     "cleanup"
   ],
-  "author": "yamixst",
+  "author": "Mikhail Yatsenko",
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^22.13.10",
