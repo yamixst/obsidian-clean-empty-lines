@@ -1,0 +1,10 @@
+{
+  "id": "clean-empty-lines",
+  "name": "Clean Empty Lines",
+  "version": "1.0.0",
+  "minAppVersion": "0.15.0",
+  "description": "Remove duplicate empty lines, format spacing around headings, tighten list items, and remove horizontal rules.",
+  "author": "yamixst",
+  "authorUrl": "https://github.com/yamixst/obsidian-clean-empty-lines",
+  "isDesktopOnly": false
+}
