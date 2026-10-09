@@ -39,7 +39,6 @@ function getIndentSpaces(whitespace: string): number {
  */
 function tokenizeLines(lines: string[]): LineInfo[] {
   const result: LineInfo[] = [];
-  let inFrontmatter = false;
   let inCodeBlock = false;
   let codeFenceChar = "";
   let codeFenceLen = 0;

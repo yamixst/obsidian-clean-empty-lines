@@ -22,7 +22,7 @@ export default class CleanEmptyLinesPlugin extends Plugin {
 
     // 2. Command: Format active note
     this.addCommand({
-      id: "clean-empty-lines-note",
+      id: "clean-note",
       name: t("cmdCleanNote"),
       editorCallback: (editor: Editor) => {
         this.formatEditor(editor);
@@ -31,7 +31,7 @@ export default class CleanEmptyLinesPlugin extends Plugin {
 
     // 3. Command: Format selected text
     this.addCommand({
-      id: "clean-empty-lines-selection",
+      id: "clean-selection",
       name: t("cmdCleanSelection"),
       editorCallback: (editor: Editor) => {
         this.formatSelection(editor);
@@ -79,7 +79,8 @@ export default class CleanEmptyLinesPlugin extends Plugin {
   }
 
   async loadSettings() {
-    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+    const data = (await this.loadData()) as Partial<CleanEmptyLinesSettings> | null;
+    this.settings = Object.assign({}, DEFAULT_SETTINGS, data);
   }
 
   async saveSettings() {

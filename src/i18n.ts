@@ -1,4 +1,4 @@
-declare const window: any;
+import { getLanguage } from "obsidian";
 
 const en = {
   ribbonIconTitle: "Clean empty lines",
@@ -325,17 +325,13 @@ const localeMap: Record<string, Record<TranslationKey, string>> = {
 
 export function getLocale(): string {
   try {
-    if (typeof window !== "undefined" && window.localStorage) {
-      const stored = window.localStorage.getItem("language");
-      if (stored) return stored.toLowerCase();
+    const lang = getLanguage();
+    if (typeof lang === "string" && lang.length > 0) {
+      return lang.toLowerCase();
     }
-  } catch (e) {}
-
-  try {
-    if (typeof window !== "undefined" && window.moment && typeof window.moment.locale === "function") {
-      return window.moment.locale().toLowerCase();
-    }
-  } catch (e) {}
+  } catch (_err) {
+    // Fall back to default English
+  }
 
   return "en";
 }

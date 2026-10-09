@@ -27,7 +27,7 @@ __export(main_exports, {
   default: () => CleanEmptyLinesPlugin
 });
 module.exports = __toCommonJS(main_exports);
-var import_obsidian2 = require("obsidian");
+var import_obsidian3 = require("obsidian");
 
 // src/types.ts
 var DEFAULT_SETTINGS = {
@@ -59,7 +59,6 @@ function getIndentSpaces(whitespace) {
 function tokenizeLines(lines) {
   var _a;
   const result = [];
-  let inFrontmatter = false;
   let inCodeBlock = false;
   let codeFenceChar = "";
   let codeFenceLen = 0;
@@ -343,9 +342,10 @@ function cleanEmptyLines(content, customSettings = {}, isSelection = false) {
 }
 
 // src/settings.ts
-var import_obsidian = require("obsidian");
+var import_obsidian2 = require("obsidian");
 
 // src/i18n.ts
+var import_obsidian = require("obsidian");
 var en = {
   ribbonIconTitle: "Clean empty lines",
   cmdCleanNote: "Clean empty lines in active note",
@@ -650,17 +650,11 @@ var localeMap = {
 };
 function getLocale() {
   try {
-    if (typeof window !== "undefined" && window.localStorage) {
-      const stored = window.localStorage.getItem("language");
-      if (stored) return stored.toLowerCase();
+    const lang = (0, import_obsidian.getLanguage)();
+    if (typeof lang === "string" && lang.length > 0) {
+      return lang.toLowerCase();
     }
-  } catch (e) {
-  }
-  try {
-    if (typeof window !== "undefined" && window.moment && typeof window.moment.locale === "function") {
-      return window.moment.locale().toLowerCase();
-    }
-  } catch (e) {
+  } catch (_err) {
   }
   return "en";
 }
@@ -677,7 +671,7 @@ function t(key, customLocale) {
 }
 
 // src/settings.ts
-var CleanEmptyLinesSettingTab = class extends import_obsidian.PluginSettingTab {
+var CleanEmptyLinesSettingTab = class extends import_obsidian2.PluginSettingTab {
   constructor(app, plugin) {
     super(app, plugin);
     this.plugin = plugin;
@@ -685,54 +679,54 @@ var CleanEmptyLinesSettingTab = class extends import_obsidian.PluginSettingTab {
   display() {
     const { containerEl } = this;
     containerEl.empty();
-    containerEl.createEl("h2", { text: t("settingsTitle") });
-    new import_obsidian.Setting(containerEl).setName(t("settingDuplicateName")).setDesc(t("settingDuplicateDesc")).addToggle(
+    new import_obsidian2.Setting(containerEl).setName(t("settingsTitle")).setHeading();
+    new import_obsidian2.Setting(containerEl).setName(t("settingDuplicateName")).setDesc(t("settingDuplicateDesc")).addToggle(
       (toggle) => toggle.setValue(this.plugin.settings.removeDuplicateEmptyLines).onChange(async (value) => {
         this.plugin.settings.removeDuplicateEmptyLines = value;
         await this.plugin.saveSettings();
       })
     );
-    containerEl.createEl("h3", { text: t("settingHeadingsSection") });
-    new import_obsidian.Setting(containerEl).setName(t("settingHeadingBeforeName")).setDesc(t("settingHeadingBeforeDesc")).addToggle(
+    new import_obsidian2.Setting(containerEl).setName(t("settingHeadingsSection")).setHeading();
+    new import_obsidian2.Setting(containerEl).setName(t("settingHeadingBeforeName")).setDesc(t("settingHeadingBeforeDesc")).addToggle(
       (toggle) => toggle.setValue(this.plugin.settings.ensureEmptyLineBeforeHeading).onChange(async (value) => {
         this.plugin.settings.ensureEmptyLineBeforeHeading = value;
         await this.plugin.saveSettings();
       })
     );
-    new import_obsidian.Setting(containerEl).setName(t("settingHeadingAfterName")).setDesc(t("settingHeadingAfterDesc")).addToggle(
+    new import_obsidian2.Setting(containerEl).setName(t("settingHeadingAfterName")).setDesc(t("settingHeadingAfterDesc")).addToggle(
       (toggle) => toggle.setValue(this.plugin.settings.ensureEmptyLineAfterHeading).onChange(async (value) => {
         this.plugin.settings.ensureEmptyLineAfterHeading = value;
         await this.plugin.saveSettings();
       })
     );
-    new import_obsidian.Setting(containerEl).setName(t("settingHeadingConsecutiveName")).setDesc(t("settingHeadingConsecutiveDesc")).addToggle(
+    new import_obsidian2.Setting(containerEl).setName(t("settingHeadingConsecutiveName")).setDesc(t("settingHeadingConsecutiveDesc")).addToggle(
       (toggle) => toggle.setValue(this.plugin.settings.emptyLineBetweenConsecutiveHeadings).onChange(async (value) => {
         this.plugin.settings.emptyLineBetweenConsecutiveHeadings = value;
         await this.plugin.saveSettings();
       })
     );
-    containerEl.createEl("h3", { text: t("settingListsSection") });
-    new import_obsidian.Setting(containerEl).setName(t("settingListsName")).setDesc(t("settingListsDesc")).addToggle(
+    new import_obsidian2.Setting(containerEl).setName(t("settingListsSection")).setHeading();
+    new import_obsidian2.Setting(containerEl).setName(t("settingListsName")).setDesc(t("settingListsDesc")).addToggle(
       (toggle) => toggle.setValue(this.plugin.settings.removeEmptyLinesInLists).onChange(async (value) => {
         this.plugin.settings.removeEmptyLinesInLists = value;
         await this.plugin.saveSettings();
       })
     );
-    containerEl.createEl("h3", { text: t("settingSeparatorsSection") });
-    new import_obsidian.Setting(containerEl).setName(t("settingHorizontalRulesName")).setDesc(t("settingHorizontalRulesDesc")).addToggle(
+    new import_obsidian2.Setting(containerEl).setName(t("settingSeparatorsSection")).setHeading();
+    new import_obsidian2.Setting(containerEl).setName(t("settingHorizontalRulesName")).setDesc(t("settingHorizontalRulesDesc")).addToggle(
       (toggle) => toggle.setValue(this.plugin.settings.removeHorizontalRules).onChange(async (value) => {
         this.plugin.settings.removeHorizontalRules = value;
         await this.plugin.saveSettings();
       })
     );
-    containerEl.createEl("h3", { text: t("settingAdditionalSection") });
-    new import_obsidian.Setting(containerEl).setName(t("settingTrimLeadingName")).setDesc(t("settingTrimLeadingDesc")).addToggle(
+    new import_obsidian2.Setting(containerEl).setName(t("settingAdditionalSection")).setHeading();
+    new import_obsidian2.Setting(containerEl).setName(t("settingTrimLeadingName")).setDesc(t("settingTrimLeadingDesc")).addToggle(
       (toggle) => toggle.setValue(this.plugin.settings.trimLeadingEmptyLines).onChange(async (value) => {
         this.plugin.settings.trimLeadingEmptyLines = value;
         await this.plugin.saveSettings();
       })
     );
-    new import_obsidian.Setting(containerEl).setName(t("settingTrimTrailingName")).setDesc(t("settingTrimTrailingDesc")).addToggle(
+    new import_obsidian2.Setting(containerEl).setName(t("settingTrimTrailingName")).setDesc(t("settingTrimTrailingDesc")).addToggle(
       (toggle) => toggle.setValue(this.plugin.settings.trimTrailingEmptyLines).onChange(async (value) => {
         this.plugin.settings.trimTrailingEmptyLines = value;
         await this.plugin.saveSettings();
@@ -742,7 +736,7 @@ var CleanEmptyLinesSettingTab = class extends import_obsidian.PluginSettingTab {
 };
 
 // src/main.ts
-var CleanEmptyLinesPlugin = class extends import_obsidian2.Plugin {
+var CleanEmptyLinesPlugin = class extends import_obsidian3.Plugin {
   constructor() {
     super(...arguments);
     this.settings = DEFAULT_SETTINGS;
@@ -750,22 +744,22 @@ var CleanEmptyLinesPlugin = class extends import_obsidian2.Plugin {
   async onload() {
     await this.loadSettings();
     this.addRibbonIcon("list-checks", t("ribbonIconTitle"), () => {
-      const activeView = this.app.workspace.getActiveViewOfType(import_obsidian2.MarkdownView);
+      const activeView = this.app.workspace.getActiveViewOfType(import_obsidian3.MarkdownView);
       if (activeView) {
         this.formatEditor(activeView.editor);
       } else {
-        new import_obsidian2.Notice(t("noticeNoActiveNote"));
+        new import_obsidian3.Notice(t("noticeNoActiveNote"));
       }
     });
     this.addCommand({
-      id: "clean-empty-lines-note",
+      id: "clean-note",
       name: t("cmdCleanNote"),
       editorCallback: (editor) => {
         this.formatEditor(editor);
       }
     });
     this.addCommand({
-      id: "clean-empty-lines-selection",
+      id: "clean-selection",
       name: t("cmdCleanSelection"),
       editorCallback: (editor) => {
         this.formatSelection(editor);
@@ -784,27 +778,28 @@ var CleanEmptyLinesPlugin = class extends import_obsidian2.Plugin {
         line: Math.min(cursor.line, totalLines - 1),
         ch: cursor.ch
       });
-      new import_obsidian2.Notice(t("noticeCleanSuccess"));
+      new import_obsidian3.Notice(t("noticeCleanSuccess"));
     } else {
-      new import_obsidian2.Notice(t("noticeNoCleanNeeded"));
+      new import_obsidian3.Notice(t("noticeNoCleanNeeded"));
     }
   }
   formatSelection(editor) {
     if (!editor.somethingSelected()) {
-      new import_obsidian2.Notice(t("noticeSelectTextFirst"));
+      new import_obsidian3.Notice(t("noticeSelectTextFirst"));
       return;
     }
     const selection = editor.getSelection();
     const cleanedSelection = cleanEmptyLines(selection, this.settings, true);
     if (selection !== cleanedSelection) {
       editor.replaceSelection(cleanedSelection);
-      new import_obsidian2.Notice(t("noticeSelectionSuccess"));
+      new import_obsidian3.Notice(t("noticeSelectionSuccess"));
     } else {
-      new import_obsidian2.Notice(t("noticeSelectionNoCleanNeeded"));
+      new import_obsidian3.Notice(t("noticeSelectionNoCleanNeeded"));
     }
   }
   async loadSettings() {
-    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+    const data = await this.loadData();
+    this.settings = Object.assign({}, DEFAULT_SETTINGS, data);
   }
   async saveSettings() {
     await this.saveData(this.settings);

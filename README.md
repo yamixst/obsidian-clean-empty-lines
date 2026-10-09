@@ -14,7 +14,6 @@ An [Obsidian](https://obsidian.md) plugin that tidies up blank lines and separat
 ## Installation
 
 ### From Obsidian Community Plugins
-*(Coming soon once approved in the official directory!)*
 
 1. In Obsidian, go to **Settings** -> **Community plugins**.
 2. Turn off Restricted mode and click **Browse**.

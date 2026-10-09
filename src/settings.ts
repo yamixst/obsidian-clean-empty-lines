@@ -14,7 +14,7 @@ export class CleanEmptyLinesSettingTab extends PluginSettingTab {
     const { containerEl } = this;
     containerEl.empty();
 
-    containerEl.createEl("h2", { text: t("settingsTitle") });
+    new Setting(containerEl).setName(t("settingsTitle")).setHeading();
 
     new Setting(containerEl)
       .setName(t("settingDuplicateName"))
@@ -28,7 +28,7 @@ export class CleanEmptyLinesSettingTab extends PluginSettingTab {
           })
       );
 
-    containerEl.createEl("h3", { text: t("settingHeadingsSection") });
+    new Setting(containerEl).setName(t("settingHeadingsSection")).setHeading();
 
     new Setting(containerEl)
       .setName(t("settingHeadingBeforeName"))
@@ -66,7 +66,7 @@ export class CleanEmptyLinesSettingTab extends PluginSettingTab {
           })
       );
 
-    containerEl.createEl("h3", { text: t("settingListsSection") });
+    new Setting(containerEl).setName(t("settingListsSection")).setHeading();
 
     new Setting(containerEl)
       .setName(t("settingListsName"))
@@ -80,7 +80,7 @@ export class CleanEmptyLinesSettingTab extends PluginSettingTab {
           })
       );
 
-    containerEl.createEl("h3", { text: t("settingSeparatorsSection") });
+    new Setting(containerEl).setName(t("settingSeparatorsSection")).setHeading();
 
     new Setting(containerEl)
       .setName(t("settingHorizontalRulesName"))
@@ -94,7 +94,7 @@ export class CleanEmptyLinesSettingTab extends PluginSettingTab {
           })
       );
 
-    containerEl.createEl("h3", { text: t("settingAdditionalSection") });
+    new Setting(containerEl).setName(t("settingAdditionalSection")).setHeading();
 
     new Setting(containerEl)
       .setName(t("settingTrimLeadingName"))
