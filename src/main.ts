@@ -2,6 +2,7 @@ import { Editor, MarkdownView, Notice, Plugin } from "obsidian";
 import { CleanEmptyLinesSettings, DEFAULT_SETTINGS } from "./types";
 import { cleanEmptyLines } from "./cleaner";
 import { CleanEmptyLinesSettingTab } from "./settings";
+import { t } from "./i18n";
 
 export default class CleanEmptyLinesPlugin extends Plugin {
   settings: CleanEmptyLinesSettings = DEFAULT_SETTINGS;
@@ -10,19 +11,19 @@ export default class CleanEmptyLinesPlugin extends Plugin {
     await this.loadSettings();
 
     // 1. Ribbon icon to format active note
-    this.addRibbonIcon("list-checks", "Очистить пустые строки", () => {
+    this.addRibbonIcon("list-checks", t("ribbonIconTitle"), () => {
       const activeView = this.app.workspace.getActiveViewOfType(MarkdownView);
       if (activeView) {
         this.formatEditor(activeView.editor);
       } else {
-        new Notice("Нет активной Markdown-заметки");
+        new Notice(t("noticeNoActiveNote"));
       }
     });
 
     // 2. Command: Format active note
     this.addCommand({
       id: "clean-empty-lines-note",
-      name: "Очистить пустые строки в активной заметке",
+      name: t("cmdCleanNote"),
       editorCallback: (editor: Editor) => {
         this.formatEditor(editor);
       },
@@ -31,7 +32,7 @@ export default class CleanEmptyLinesPlugin extends Plugin {
     // 3. Command: Format selected text
     this.addCommand({
       id: "clean-empty-lines-selection",
-      name: "Очистить пустые строки в выделенном фрагменте",
+      name: t("cmdCleanSelection"),
       editorCallback: (editor: Editor) => {
         this.formatSelection(editor);
       },
@@ -54,15 +55,15 @@ export default class CleanEmptyLinesPlugin extends Plugin {
         line: Math.min(cursor.line, totalLines - 1),
         ch: cursor.ch,
       });
-      new Notice("Пустые строки успешно отформатированы");
+      new Notice(t("noticeCleanSuccess"));
     } else {
-      new Notice("Форматирование не требуется");
+      new Notice(t("noticeNoCleanNeeded"));
     }
   }
 
   formatSelection(editor: Editor) {
     if (!editor.somethingSelected()) {
-      new Notice("Сначала выделите текст для форматирования");
+      new Notice(t("noticeSelectTextFirst"));
       return;
     }
 
@@ -71,9 +72,9 @@ export default class CleanEmptyLinesPlugin extends Plugin {
 
     if (selection !== cleanedSelection) {
       editor.replaceSelection(cleanedSelection);
-      new Notice("Выделенный фрагмент отформатирован");
+      new Notice(t("noticeSelectionSuccess"));
     } else {
-      new Notice("В выделении форматирование не требуется");
+      new Notice(t("noticeSelectionNoCleanNeeded"));
     }
   }
 

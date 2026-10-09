@@ -322,7 +322,7 @@ function cleanEmptyLines(content, customSettings = {}, isSelection = false) {
     }
     tokens = collapsed;
   }
-  let resultLines = tokens.map((t) => t.raw);
+  let resultLines = tokens.map((t2) => t2.raw);
   if (!isSelection) {
     if (settings.trimLeadingEmptyLines) {
       while (resultLines.length > 0 && /^\s*$/.test(resultLines[0])) {
@@ -344,6 +344,339 @@ function cleanEmptyLines(content, customSettings = {}, isSelection = false) {
 
 // src/settings.ts
 var import_obsidian = require("obsidian");
+
+// src/i18n.ts
+var en = {
+  ribbonIconTitle: "Clean empty lines",
+  cmdCleanNote: "Clean empty lines in active note",
+  cmdCleanSelection: "Clean empty lines in selection",
+  noticeNoActiveNote: "No active Markdown note",
+  noticeCleanSuccess: "Empty lines cleaned successfully",
+  noticeNoCleanNeeded: "Formatting not required",
+  noticeSelectTextFirst: "Please select text to format first",
+  noticeSelectionSuccess: "Selection formatted successfully",
+  noticeSelectionNoCleanNeeded: "Selection formatting not required",
+  settingsTitle: "Clean Empty Lines Settings",
+  settingDuplicateName: "Remove duplicate empty lines",
+  settingDuplicateDesc: "Collapse two or more consecutive blank lines into a single blank line.",
+  settingHeadingsSection: "Headings",
+  settingHeadingBeforeName: "Empty line before headings",
+  settingHeadingBeforeDesc: "Ensure a blank line before headings (except at the very top of the document).",
+  settingHeadingAfterName: "Empty line after headings",
+  settingHeadingAfterDesc: "Ensure a blank line after headings (before subsequent content).",
+  settingHeadingConsecutiveName: "Empty line between consecutive headings",
+  settingHeadingConsecutiveDesc: "Insert a blank line between adjacent headings (e.g. between # and ##).",
+  settingListsSection: "Lists",
+  settingListsName: "Remove empty lines between list items",
+  settingListsDesc: "Make lists compact by removing blank lines between items.",
+  settingSeparatorsSection: "Separators",
+  settingHorizontalRulesName: "Remove horizontal lines (---)",
+  settingHorizontalRulesDesc: "Remove thematic break lines (---) in the note body (YAML frontmatter is preserved).",
+  settingAdditionalSection: "Additional",
+  settingTrimLeadingName: "Trim leading empty lines",
+  settingTrimLeadingDesc: "Remove blank lines at the very top of the document.",
+  settingTrimTrailingName: "Trim trailing empty lines",
+  settingTrimTrailingDesc: "Remove extra blank lines at the very end of the document."
+};
+var ru = {
+  ribbonIconTitle: "\u041E\u0447\u0438\u0441\u0442\u0438\u0442\u044C \u043F\u0443\u0441\u0442\u044B\u0435 \u0441\u0442\u0440\u043E\u043A\u0438",
+  cmdCleanNote: "\u041E\u0447\u0438\u0441\u0442\u0438\u0442\u044C \u043F\u0443\u0441\u0442\u044B\u0435 \u0441\u0442\u0440\u043E\u043A\u0438 \u0432 \u0430\u043A\u0442\u0438\u0432\u043D\u043E\u0439 \u0437\u0430\u043C\u0435\u0442\u043A\u0435",
+  cmdCleanSelection: "\u041E\u0447\u0438\u0441\u0442\u0438\u0442\u044C \u043F\u0443\u0441\u0442\u044B\u0435 \u0441\u0442\u0440\u043E\u043A\u0438 \u0432 \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u043D\u043E\u043C \u0444\u0440\u0430\u0433\u043C\u0435\u043D\u0442\u0435",
+  noticeNoActiveNote: "\u041D\u0435\u0442 \u0430\u043A\u0442\u0438\u0432\u043D\u043E\u0439 Markdown-\u0437\u0430\u043C\u0435\u0442\u043A\u0438",
+  noticeCleanSuccess: "\u041F\u0443\u0441\u0442\u044B\u0435 \u0441\u0442\u0440\u043E\u043A\u0438 \u0443\u0441\u043F\u0435\u0448\u043D\u043E \u043E\u0442\u0444\u043E\u0440\u043C\u0430\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u044B",
+  noticeNoCleanNeeded: "\u0424\u043E\u0440\u043C\u0430\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u043D\u0435 \u0442\u0440\u0435\u0431\u0443\u0435\u0442\u0441\u044F",
+  noticeSelectTextFirst: "\u0421\u043D\u0430\u0447\u0430\u043B\u0430 \u0432\u044B\u0434\u0435\u043B\u0438\u0442\u0435 \u0442\u0435\u043A\u0441\u0442 \u0434\u043B\u044F \u0444\u043E\u0440\u043C\u0430\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u044F",
+  noticeSelectionSuccess: "\u0412\u044B\u0434\u0435\u043B\u0435\u043D\u043D\u044B\u0439 \u0444\u0440\u0430\u0433\u043C\u0435\u043D\u0442 \u043E\u0442\u0444\u043E\u0440\u043C\u0430\u0442\u0438\u0440\u043E\u0432\u0430\u043D",
+  noticeSelectionNoCleanNeeded: "\u0412 \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u0438\u0438 \u0444\u043E\u0440\u043C\u0430\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u043D\u0435 \u0442\u0440\u0435\u0431\u0443\u0435\u0442\u0441\u044F",
+  settingsTitle: "\u041D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0438 Clean Empty Lines",
+  settingDuplicateName: "\u0423\u0434\u0430\u043B\u044F\u0442\u044C \u0434\u0443\u0431\u043B\u0438\u0440\u0443\u044E\u0449\u0438\u0435\u0441\u044F \u043F\u0443\u0441\u0442\u044B\u0435 \u0441\u0442\u0440\u043E\u043A\u0438",
+  settingDuplicateDesc: "\u0421\u0445\u043B\u043E\u043F\u044B\u0432\u0430\u0435\u0442 \u043D\u0435\u0441\u043A\u043E\u043B\u044C\u043A\u043E \u043F\u043E\u0434\u0440\u044F\u0434 \u0438\u0434\u0443\u0449\u0438\u0445 \u043F\u0443\u0441\u0442\u044B\u0445 \u0441\u0442\u0440\u043E\u043A \u0432 \u043E\u0434\u043D\u0443.",
+  settingHeadingsSection: "\u0417\u0430\u0433\u043E\u043B\u043E\u0432\u043A\u0438",
+  settingHeadingBeforeName: "\u041F\u0443\u0441\u0442\u0430\u044F \u0441\u0442\u0440\u043E\u043A\u0430 \u043F\u0435\u0440\u0435\u0434 \u0437\u0430\u0433\u043E\u043B\u043E\u0432\u043A\u0430\u043C\u0438",
+  settingHeadingBeforeDesc: "\u0413\u0430\u0440\u0430\u043D\u0442\u0438\u0440\u0443\u0435\u0442 \u043E\u0434\u043D\u0443 \u043F\u0443\u0441\u0442\u0443\u044E \u0441\u0442\u0440\u043E\u043A\u0443 \u043F\u0435\u0440\u0435\u0434 \u0437\u0430\u0433\u043E\u043B\u043E\u0432\u043A\u043E\u043C (\u043A\u0440\u043E\u043C\u0435 \u0441\u0430\u043C\u043E\u0433\u043E \u043D\u0430\u0447\u0430\u043B\u0430 \u0444\u0430\u0439\u043B\u0430).",
+  settingHeadingAfterName: "\u041F\u0443\u0441\u0442\u0430\u044F \u0441\u0442\u0440\u043E\u043A\u0430 \u043F\u043E\u0441\u043B\u0435 \u0437\u0430\u0433\u043E\u043B\u043E\u0432\u043A\u043E\u0432",
+  settingHeadingAfterDesc: "\u0413\u0430\u0440\u0430\u043D\u0442\u0438\u0440\u0443\u0435\u0442 \u043E\u0434\u043D\u0443 \u043F\u0443\u0441\u0442\u0443\u044E \u0441\u0442\u0440\u043E\u043A\u0443 \u043F\u043E\u0441\u043B\u0435 \u0437\u0430\u0433\u043E\u043B\u043E\u0432\u043A\u0430 (\u043F\u0435\u0440\u0435\u0434 \u0441\u043B\u0435\u0434\u0443\u044E\u0449\u0438\u043C \u0442\u0435\u043A\u0441\u0442\u043E\u043C).",
+  settingHeadingConsecutiveName: "\u041F\u0443\u0441\u0442\u0430\u044F \u0441\u0442\u0440\u043E\u043A\u0430 \u043C\u0435\u0436\u0434\u0443 \u043F\u043E\u0434\u0440\u044F\u0434 \u0438\u0434\u0443\u0449\u0438\u043C\u0438 \u0437\u0430\u0433\u043E\u043B\u043E\u0432\u043A\u0430\u043C\u0438",
+  settingHeadingConsecutiveDesc: "\u0412\u0441\u0442\u0430\u0432\u043B\u044F\u0442\u044C \u043B\u0438 \u043F\u0443\u0441\u0442\u0443\u044E \u0441\u0442\u0440\u043E\u043A\u0443 \u043C\u0435\u0436\u0434\u0443 \u0441\u043C\u0435\u0436\u043D\u044B\u043C\u0438 \u0437\u0430\u0433\u043E\u043B\u043E\u0432\u043A\u0430\u043C\u0438 (\u043D\u0430\u043F\u0440\u0438\u043C\u0435\u0440, \u043C\u0435\u0436\u0434\u0443 # \u0438 ##).",
+  settingListsSection: "\u0421\u043F\u0438\u0441\u043A\u0438",
+  settingListsName: "\u0423\u0434\u0430\u043B\u044F\u0442\u044C \u043F\u0443\u0441\u0442\u044B\u0435 \u0441\u0442\u0440\u043E\u043A\u0438 \u043C\u0435\u0436\u0434\u0443 \u044D\u043B\u0435\u043C\u0435\u043D\u0442\u0430\u043C\u0438 \u0441\u043F\u0438\u0441\u043A\u0430",
+  settingListsDesc: "\u0414\u0435\u043B\u0430\u0435\u0442 \u0441\u043F\u0438\u0441\u043A\u0438 \u043A\u043E\u043C\u043F\u0430\u043A\u0442\u043D\u044B\u043C\u0438, \u0443\u0434\u0430\u043B\u044F\u044F \u043F\u0443\u0441\u0442\u044B\u0435 \u0441\u0442\u0440\u043E\u043A\u0438 \u043C\u0435\u0436\u0434\u0443 \u043F\u0443\u043D\u043A\u0442\u0430\u043C\u0438 \u0441\u043F\u0438\u0441\u043A\u043E\u0432.",
+  settingSeparatorsSection: "\u0420\u0430\u0437\u0434\u0435\u043B\u0438\u0442\u0435\u043B\u0438",
+  settingHorizontalRulesName: "\u0423\u0434\u0430\u043B\u044F\u0442\u044C \u0433\u043E\u0440\u0438\u0437\u043E\u043D\u0442\u0430\u043B\u044C\u043D\u044B\u0435 \u043B\u0438\u043D\u0438\u0438 (---)",
+  settingHorizontalRulesDesc: "\u0423\u0434\u0430\u043B\u044F\u0435\u0442 \u0440\u0430\u0437\u0434\u0435\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u044B\u0435 \u043B\u0438\u043D\u0438\u0438 (thematic breaks / horizontal rules), \u043A\u0440\u043E\u043C\u0435 YAML frontmatter.",
+  settingAdditionalSection: "\u0414\u043E\u043F\u043E\u043B\u043D\u0438\u0442\u0435\u043B\u044C\u043D\u043E",
+  settingTrimLeadingName: "\u0423\u0434\u0430\u043B\u044F\u0442\u044C \u043F\u0443\u0441\u0442\u044B\u0435 \u0441\u0442\u0440\u043E\u043A\u0438 \u0432 \u043D\u0430\u0447\u0430\u043B\u0435 \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u0430",
+  settingTrimLeadingDesc: "\u0423\u0434\u0430\u043B\u044F\u0435\u0442 \u043F\u0443\u0441\u0442\u044B\u0435 \u0441\u0442\u0440\u043E\u043A\u0438 \u0432 \u0441\u0430\u043C\u043E\u043C \u0432\u0435\u0440\u0445\u0443 \u0444\u0430\u0439\u043B\u0430 \u043F\u0435\u0440\u0435\u0434 \u043F\u0435\u0440\u0432\u044B\u043C \u0441\u043E\u0434\u0435\u0440\u0436\u0438\u043C\u044B\u043C.",
+  settingTrimTrailingName: "\u041E\u0447\u0438\u0449\u0430\u0442\u044C \u043B\u0438\u0448\u043D\u0438\u0435 \u043F\u0443\u0441\u0442\u044B\u0435 \u0441\u0442\u0440\u043E\u043A\u0438 \u0432 \u043A\u043E\u043D\u0446\u0435 \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u0430",
+  settingTrimTrailingDesc: "\u0423\u0434\u0430\u043B\u044F\u0435\u0442 \u043B\u0438\u0448\u043D\u0438\u0435 \u043F\u0443\u0441\u0442\u044B\u0435 \u0441\u0442\u0440\u043E\u043A\u0438 \u0432 \u0441\u0430\u043C\u043E\u043C \u043A\u043E\u043D\u0446\u0435 \u0444\u0430\u0439\u043B\u0430."
+};
+var de = {
+  ribbonIconTitle: "Leerzeilen bereinigen",
+  cmdCleanNote: "Leerzeilen in aktiver Notiz bereinigen",
+  cmdCleanSelection: "Leerzeilen in Auswahl bereinigen",
+  noticeNoActiveNote: "Keine aktive Markdown-Notiz",
+  noticeCleanSuccess: "Leerzeilen erfolgreich bereinigt",
+  noticeNoCleanNeeded: "Keine Formatierung erforderlich",
+  noticeSelectTextFirst: "Bitte zuerst Text zum Formatieren ausw\xE4hlen",
+  noticeSelectionSuccess: "Auswahl erfolgreich formatiert",
+  noticeSelectionNoCleanNeeded: "Formatierung der Auswahl nicht erforderlich",
+  settingsTitle: "Clean Empty Lines Einstellungen",
+  settingDuplicateName: "Doppelte Leerzeilen entfernen",
+  settingDuplicateDesc: "Fasst zwei oder mehr aufeinanderfolgende Leerzeilen zu einer zusammen.",
+  settingHeadingsSection: "\xDCberschriften",
+  settingHeadingBeforeName: "Leerzeile vor \xDCberschriften",
+  settingHeadingBeforeDesc: "Stellt eine Leerzeile vor \xDCberschriften sicher (au\xDFer am Dokumentanfang).",
+  settingHeadingAfterName: "Leerzeile nach \xDCberschriften",
+  settingHeadingAfterDesc: "Stellt eine Leerzeile nach \xDCberschriften sicher.",
+  settingHeadingConsecutiveName: "Leerzeile zwischen aufeinanderfolgenden \xDCberschriften",
+  settingHeadingConsecutiveDesc: "Leerzeile zwischen benachbarten \xDCberschriften einf\xFCgen (z. B. zwischen # und ##).",
+  settingListsSection: "Listen",
+  settingListsName: "Leerzeilen zwischen Listenelementen entfernen",
+  settingListsDesc: "Macht Listen kompakt, indem Leerzeilen zwischen Listeneintr\xE4gen entfernt werden.",
+  settingSeparatorsSection: "Trennlinien",
+  settingHorizontalRulesName: "Horizontale Linien (---) entfernen",
+  settingHorizontalRulesDesc: "Entfernt Trennlinien (---) im Notiztext (YAML Frontmatter bleibt erhalten).",
+  settingAdditionalSection: "Zus\xE4tzliche Optionen",
+  settingTrimLeadingName: "F\xFChrende Leerzeilen entfernen",
+  settingTrimLeadingDesc: "Entfernt Leerzeilen ganz oben im Dokument.",
+  settingTrimTrailingName: "Nachfolgende Leerzeilen entfernen",
+  settingTrimTrailingDesc: "Entfernt \xFCberfl\xFCssige Leerzeilen ganz am Ende des Dokuments."
+};
+var fr = {
+  ribbonIconTitle: "Nettoyer les lignes vides",
+  cmdCleanNote: "Nettoyer les lignes vides dans la note active",
+  cmdCleanSelection: "Nettoyer les lignes vides dans la s\xE9lection",
+  noticeNoActiveNote: "Aucune note Markdown active",
+  noticeCleanSuccess: "Lignes vides nettoy\xE9es avec succ\xE8s",
+  noticeNoCleanNeeded: "Formatage non n\xE9cessaire",
+  noticeSelectTextFirst: "Veuillez d'abord s\xE9lectionner du texte \xE0 formater",
+  noticeSelectionSuccess: "S\xE9lection format\xE9e avec succ\xE8s",
+  noticeSelectionNoCleanNeeded: "Formatage de la s\xE9lection non n\xE9cessaire",
+  settingsTitle: "Param\xE8tres de Clean Empty Lines",
+  settingDuplicateName: "Supprimer les lignes vides en double",
+  settingDuplicateDesc: "R\xE9duit deux ou plusieurs lignes vides cons\xE9cutives en une seule.",
+  settingHeadingsSection: "Titres",
+  settingHeadingBeforeName: "Ligne vide avant les titres",
+  settingHeadingBeforeDesc: "Assure une ligne vide avant les titres (sauf en tout d\xE9but de document).",
+  settingHeadingAfterName: "Ligne vide apr\xE8s les titres",
+  settingHeadingAfterDesc: "Assure une ligne vide apr\xE8s les titres.",
+  settingHeadingConsecutiveName: "Ligne vide entre titres cons\xE9cutifs",
+  settingHeadingConsecutiveDesc: "Ins\xE9rer une ligne vide entre titres cons\xE9cutifs (par ex. entre # et ##).",
+  settingListsSection: "Listes",
+  settingListsName: "Supprimer les lignes vides entre \xE9l\xE9ments de liste",
+  settingListsDesc: "Rend les listes compactes en supprimant les lignes vides entre les puces.",
+  settingSeparatorsSection: "S\xE9parateurs",
+  settingHorizontalRulesName: "Supprimer les lignes horizontales (---)",
+  settingHorizontalRulesDesc: "Supprime les lignes de s\xE9paration (---) dans le corps du texte (le frontmatter YAML est pr\xE9serv\xE9).",
+  settingAdditionalSection: "Options suppl\xE9mentaires",
+  settingTrimLeadingName: "Supprimer les lignes vides au d\xE9but",
+  settingTrimLeadingDesc: "Supprime les lignes vides en tout d\xE9but de document.",
+  settingTrimTrailingName: "Supprimer les lignes vides \xE0 la fin",
+  settingTrimTrailingDesc: "Supprime les lignes vides en fin de document."
+};
+var es = {
+  ribbonIconTitle: "Limpiar l\xEDneas vac\xEDas",
+  cmdCleanNote: "Limpiar l\xEDneas vac\xEDas en la nota activa",
+  cmdCleanSelection: "Limpiar l\xEDneas vac\xEDas en la selecci\xF3n",
+  noticeNoActiveNote: "No hay ninguna nota Markdown activa",
+  noticeCleanSuccess: "L\xEDneas vac\xEDas limpiadas con \xE9xito",
+  noticeNoCleanNeeded: "No se requiere formato",
+  noticeSelectTextFirst: "Por favor, seleccione primero el texto a formatear",
+  noticeSelectionSuccess: "Selecci\xF3n formateada con \xE9xito",
+  noticeSelectionNoCleanNeeded: "No se requiere formato en la selecci\xF3n",
+  settingsTitle: "Ajustes de Clean Empty Lines",
+  settingDuplicateName: "Eliminar l\xEDneas vac\xEDas duplicadas",
+  settingDuplicateDesc: "Reduce dos o m\xE1s l\xEDneas en blanco consecutivas a una sola.",
+  settingHeadingsSection: "Encabezados",
+  settingHeadingBeforeName: "L\xEDnea vac\xEDa antes de encabezados",
+  settingHeadingBeforeDesc: "Garantiza una l\xEDnea vac\xEDa antes de los encabezados (excepto al inicio del documento).",
+  settingHeadingAfterName: "L\xEDnea vac\xEDa despu\xE9s de encabezados",
+  settingHeadingAfterDesc: "Garantiza una l\xEDnea vac\xEDa despu\xE9s de los encabezados.",
+  settingHeadingConsecutiveName: "L\xEDnea vac\xEDa entre encabezados consecutivos",
+  settingHeadingConsecutiveDesc: "Insertar una l\xEDnea en blanco entre encabezados consecutivos (ej. entre # y ##).",
+  settingListsSection: "Listas",
+  settingListsName: "Eliminar l\xEDneas vac\xEDas entre elementos de lista",
+  settingListsDesc: "Hace las listas compactas eliminando l\xEDneas en blanco entre elementos.",
+  settingSeparatorsSection: "Separadores",
+  settingHorizontalRulesName: "Eliminar l\xEDneas horizontales (---)",
+  settingHorizontalRulesDesc: "Elimina l\xEDneas divisorias (---) en el texto (el frontmatter YAML se preserva).",
+  settingAdditionalSection: "Opciones adicionales",
+  settingTrimLeadingName: "Eliminar l\xEDneas vac\xEDas iniciales",
+  settingTrimLeadingDesc: "Elimina l\xEDneas en blanco al principio del documento.",
+  settingTrimTrailingName: "Eliminar l\xEDneas vac\xEDas finales",
+  settingTrimTrailingDesc: "Elimina l\xEDneas en blanco sobrantes al final del documento."
+};
+var zh = {
+  ribbonIconTitle: "\u6E05\u7406\u7A7A\u884C",
+  cmdCleanNote: "\u6E05\u7406\u5F53\u524D\u7B14\u8BB0\u4E2D\u7684\u7A7A\u884C",
+  cmdCleanSelection: "\u6E05\u7406\u6240\u9009\u5185\u5BB9\u4E2D\u7684\u7A7A\u884C",
+  noticeNoActiveNote: "\u6CA1\u6709\u6253\u5F00\u7684 Markdown \u7B14\u8BB0",
+  noticeCleanSuccess: "\u7A7A\u884C\u6E05\u7406\u5B8C\u6210",
+  noticeNoCleanNeeded: "\u65E0\u9700\u683C\u5F0F\u5316",
+  noticeSelectTextFirst: "\u8BF7\u5148\u9009\u62E9\u9700\u8981\u683C\u5F0F\u5316\u7684\u6587\u672C",
+  noticeSelectionSuccess: "\u6240\u9009\u5185\u5BB9\u683C\u5F0F\u5316\u5B8C\u6210",
+  noticeSelectionNoCleanNeeded: "\u6240\u9009\u5185\u5BB9\u65E0\u9700\u683C\u5F0F\u5316",
+  settingsTitle: "Clean Empty Lines \u8BBE\u7F6E",
+  settingDuplicateName: "\u5220\u9664\u91CD\u590D\u7A7A\u884C",
+  settingDuplicateDesc: "\u5C06\u8FDE\u7EED\u4E24\u884C\u6216\u66F4\u591A\u7A7A\u884C\u5408\u5E76\u4E3A\u4E00\u884C\u7A7A\u884C\u3002",
+  settingHeadingsSection: "\u6807\u9898",
+  settingHeadingBeforeName: "\u6807\u9898\u524D\u4FDD\u7559\u7A7A\u884C",
+  settingHeadingBeforeDesc: "\u786E\u4FDD\u6807\u9898\u524D\u6709\u4E14\u4EC5\u6709\u4E00\u884C\u7A7A\u884C\uFF08\u6587\u6863\u5F00\u5934\u9664\u5916\uFF09\u3002",
+  settingHeadingAfterName: "\u6807\u9898\u540E\u4FDD\u7559\u7A7A\u884C",
+  settingHeadingAfterDesc: "\u786E\u4FDD\u6807\u9898\u540E\u6709\u4E14\u4EC5\u6709\u4E00\u884C\u7A7A\u884C\u3002",
+  settingHeadingConsecutiveName: "\u8FDE\u7EED\u6807\u9898\u4E4B\u95F4\u4FDD\u7559\u7A7A\u884C",
+  settingHeadingConsecutiveDesc: "\u5728\u76F8\u90BB\u7684\u6807\u9898\u4E4B\u95F4\u63D2\u5165\u7A7A\u884C\uFF08\u4F8B\u5982 # \u548C ## \u4E4B\u95F4\uFF09\u3002",
+  settingListsSection: "\u5217\u8868",
+  settingListsName: "\u5220\u9664\u5217\u8868\u9879\u4E4B\u95F4\u7684\u7A7A\u884C",
+  settingListsDesc: "\u901A\u8FC7\u5220\u9664\u5217\u8868\u9879\u4E4B\u95F4\u7684\u7A7A\u884C\u4F7F\u5217\u8868\u66F4\u7D27\u51D1\u3002",
+  settingSeparatorsSection: "\u5206\u9694\u7EBF",
+  settingHorizontalRulesName: "\u5220\u9664\u6C34\u5E73\u5206\u5272\u7EBF (---)",
+  settingHorizontalRulesDesc: "\u5220\u9664\u6B63\u6587\u4E2D\u7684\u6C34\u5E73\u5206\u5272\u7EBF\uFF08\u4FDD\u7559 YAML frontmatter\uFF09\u3002",
+  settingAdditionalSection: "\u5176\u4ED6\u9009\u9879",
+  settingTrimLeadingName: "\u6E05\u7406\u6587\u6863\u5F00\u5934\u7684\u7A7A\u884C",
+  settingTrimLeadingDesc: "\u5220\u9664\u6587\u6863\u6700\u5F00\u5934\u7684\u7A7A\u767D\u884C\u3002",
+  settingTrimTrailingName: "\u6E05\u7406\u6587\u6863\u672B\u5C3E\u7684\u7A7A\u884C",
+  settingTrimTrailingDesc: "\u5220\u9664\u6587\u6863\u672B\u5C3E\u591A\u4F59\u7684\u7A7A\u767D\u884C\u3002"
+};
+var ja = {
+  ribbonIconTitle: "\u7A7A\u884C\u3092\u30AF\u30EA\u30FC\u30F3\u30A2\u30C3\u30D7",
+  cmdCleanNote: "\u73FE\u5728\u306E\u30CE\u30FC\u30C8\u306E\u7A7A\u884C\u3092\u30AF\u30EA\u30FC\u30F3\u30A2\u30C3\u30D7",
+  cmdCleanSelection: "\u9078\u629E\u7BC4\u56F2\u306E\u7A7A\u884C\u3092\u30AF\u30EA\u30FC\u30F3\u30A2\u30C3\u30D7",
+  noticeNoActiveNote: "\u30A2\u30AF\u30C6\u30A3\u30D6\u306AMarkdown\u30CE\u30FC\u30C8\u304C\u3042\u308A\u307E\u305B\u3093",
+  noticeCleanSuccess: "\u7A7A\u884C\u306E\u30AF\u30EA\u30FC\u30F3\u30A2\u30C3\u30D7\u304C\u5B8C\u4E86\u3057\u307E\u3057\u305F",
+  noticeNoCleanNeeded: "\u30D5\u30A9\u30FC\u30DE\u30C3\u30C8\u306E\u5FC5\u8981\u306F\u3042\u308A\u307E\u305B\u3093",
+  noticeSelectTextFirst: "\u30D5\u30A9\u30FC\u30DE\u30C3\u30C8\u3059\u308B\u30C6\u30AD\u30B9\u30C8\u3092\u5148\u306B\u9078\u629E\u3057\u3066\u304F\u3060\u3055\u3044",
+  noticeSelectionSuccess: "\u9078\u629E\u7BC4\u56F2\u306E\u30D5\u30A9\u30FC\u30DE\u30C3\u30C8\u304C\u5B8C\u4E86\u3057\u307E\u3057\u305F",
+  noticeSelectionNoCleanNeeded: "\u9078\u629E\u7BC4\u56F2\u306E\u30D5\u30A9\u30FC\u30DE\u30C3\u30C8\u306F\u4E0D\u8981\u3067\u3059",
+  settingsTitle: "Clean Empty Lines \u8A2D\u5B9A",
+  settingDuplicateName: "\u91CD\u8907\u3059\u308B\u7A7A\u884C\u3092\u524A\u9664",
+  settingDuplicateDesc: "\u9023\u7D9A\u3059\u308B2\u884C\u4EE5\u4E0A\u306E\u7A7A\u884C\u30921\u884C\u306B\u307E\u3068\u3081\u307E\u3059\u3002",
+  settingHeadingsSection: "\u898B\u51FA\u3057",
+  settingHeadingBeforeName: "\u898B\u51FA\u3057\u306E\u524D\u306B\u7A7A\u884C\u3092\u633F\u5165",
+  settingHeadingBeforeDesc: "\u898B\u51FA\u3057\u306E\u524D\u306B1\u884C\u306E\u7A7A\u884C\u3092\u78BA\u4FDD\u3057\u307E\u3059\uFF08\u30C9\u30AD\u30E5\u30E1\u30F3\u30C8\u5192\u982D\u3092\u9664\u304F\uFF09\u3002",
+  settingHeadingAfterName: "\u898B\u51FA\u3057\u306E\u5F8C\u306B\u7A7A\u884C\u3092\u633F\u5165",
+  settingHeadingAfterDesc: "\u898B\u51FA\u3057\u306E\u5F8C\u306B1\u884C\u306E\u7A7A\u884C\u3092\u78BA\u4FDD\u3057\u307E\u3059\u3002",
+  settingHeadingConsecutiveName: "\u9023\u7D9A\u3059\u308B\u898B\u51FA\u3057\u306E\u9593\u306B\u7A7A\u884C\u3092\u633F\u5165",
+  settingHeadingConsecutiveDesc: "\u96A3\u63A5\u3059\u308B\u898B\u51FA\u3057\u306E\u9593\uFF08\u4F8B: # \u3068 ## \u306E\u9593\uFF09\u306B\u7A7A\u884C\u3092\u633F\u5165\u3057\u307E\u3059\u3002",
+  settingListsSection: "\u30EA\u30B9\u30C8",
+  settingListsName: "\u30EA\u30B9\u30C8\u9805\u76EE\u9593\u306E\u7A7A\u884C\u3092\u524A\u9664",
+  settingListsDesc: "\u9805\u76EE\u9593\u306E\u7A7A\u884C\u3092\u524A\u9664\u3057\u3066\u30EA\u30B9\u30C8\u3092\u30B3\u30F3\u30D1\u30AF\u30C8\u306B\u3057\u307E\u3059\u3002",
+  settingSeparatorsSection: "\u533A\u5207\u308A\u7DDA",
+  settingHorizontalRulesName: "\u6C34\u5E73\u7DDA\uFF08---\uFF09\u3092\u524A\u9664",
+  settingHorizontalRulesDesc: "\u672C\u6587\u5185\u306E\u533A\u5207\u308A\u7DDA\uFF08---\uFF09\u3092\u524A\u9664\u3057\u307E\u3059\uFF08YAML frontmatter\u306F\u4FDD\u6301\u3055\u308C\u307E\u3059\uFF09\u3002",
+  settingAdditionalSection: "\u8FFD\u52A0\u30AA\u30D7\u30B7\u30E7\u30F3",
+  settingTrimLeadingName: "\u30C9\u30AD\u30E5\u30E1\u30F3\u30C8\u5192\u982D\u306E\u7A7A\u884C\u3092\u524A\u9664",
+  settingTrimLeadingDesc: "\u30C9\u30AD\u30E5\u30E1\u30F3\u30C8\u5148\u982D\u306B\u3042\u308B\u7A7A\u884C\u3092\u524A\u9664\u3057\u307E\u3059\u3002",
+  settingTrimTrailingName: "\u30C9\u30AD\u30E5\u30E1\u30F3\u30C8\u672B\u5C3E\u306E\u7A7A\u884C\u3092\u524A\u9664",
+  settingTrimTrailingDesc: "\u30C9\u30AD\u30E5\u30E1\u30F3\u30C8\u672B\u5C3E\u306E\u4F59\u5206\u306A\u7A7A\u884C\u3092\u524A\u9664\u3057\u307E\u3059\u3002"
+};
+var ko = {
+  ribbonIconTitle: "\uBE48 \uC904 \uC815\uB9AC",
+  cmdCleanNote: "\uD604\uC7AC \uB178\uD2B8\uC758 \uBE48 \uC904 \uC815\uB9AC",
+  cmdCleanSelection: "\uC120\uD0DD \uC601\uC5ED\uC758 \uBE48 \uC904 \uC815\uB9AC",
+  noticeNoActiveNote: "\uD65C\uC131\uD654\uB41C Markdown \uB178\uD2B8\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4",
+  noticeCleanSuccess: "\uBE48 \uC904\uC774 \uC131\uACF5\uC801\uC73C\uB85C \uC815\uB9AC\uB418\uC5C8\uC2B5\uB2C8\uB2E4",
+  noticeNoCleanNeeded: "\uC11C\uC2DD \uC9C0\uC815\uC774 \uD544\uC694\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4",
+  noticeSelectTextFirst: "\uC11C\uC2DD\uC744 \uC9C0\uC815\uD560 \uD14D\uC2A4\uD2B8\uB97C \uBA3C\uC800 \uC120\uD0DD\uD558\uC138\uC694",
+  noticeSelectionSuccess: "\uC120\uD0DD \uC601\uC5ED \uC11C\uC2DD \uC9C0\uC815 \uC644\uB8CC",
+  noticeSelectionNoCleanNeeded: "\uC120\uD0DD \uC601\uC5ED\uC5D0 \uC11C\uC2DD \uC9C0\uC815\uC774 \uD544\uC694\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4",
+  settingsTitle: "Clean Empty Lines \uC124\uC815",
+  settingDuplicateName: "\uC911\uBCF5 \uBE48 \uC904 \uC81C\uAC70",
+  settingDuplicateDesc: "\uC5F0\uC18D\uB41C 2\uAC1C \uC774\uC0C1\uC758 \uBE48 \uC904\uC744 \uD558\uB098\uB85C \uC904\uC785\uB2C8\uB2E4.",
+  settingHeadingsSection: "\uC81C\uBAA9",
+  settingHeadingBeforeName: "\uC81C\uBAA9 \uC55E \uBE48 \uC904 \uC0BD\uC785",
+  settingHeadingBeforeDesc: "\uC81C\uBAA9 \uC55E\uC5D0 \uBE48 \uC904 1\uAC1C\uB97C \uBCF4\uC7A5\uD569\uB2C8\uB2E4 (\uBB38\uC11C \uB9E8 \uCC98\uC74C \uC81C\uC678).",
+  settingHeadingAfterName: "\uC81C\uBAA9 \uB4A4 \uBE48 \uC904 \uC0BD\uC785",
+  settingHeadingAfterDesc: "\uC81C\uBAA9 \uB4A4\uC5D0 \uBE48 \uC904 1\uAC1C\uB97C \uBCF4\uC7A5\uD569\uB2C8\uB2E4.",
+  settingHeadingConsecutiveName: "\uC5F0\uC18D\uB41C \uC81C\uBAA9 \uC0AC\uC774 \uBE48 \uC904 \uC0BD\uC785",
+  settingHeadingConsecutiveDesc: "\uC778\uC811\uD55C \uC81C\uBAA9 \uC0AC\uC774\uC5D0 \uBE48 \uC904\uC744 \uC0BD\uC785\uD569\uB2C8\uB2E4 (\uC608: # \uC640 ## \uC0AC\uC774).",
+  settingListsSection: "\uBAA9\uB85D",
+  settingListsName: "\uBAA9\uB85D \uD56D\uBAA9 \uC0AC\uC774 \uBE48 \uC904 \uC81C\uAC70",
+  settingListsDesc: "\uD56D\uBAA9 \uC0AC\uC774 \uBE48 \uC904\uC744 \uC81C\uAC70\uD558\uC5EC \uBAA9\uB85D\uC744 \uAC04\uACB0\uD558\uAC8C \uB9CC\uB4ED\uB2C8\uB2E4.",
+  settingSeparatorsSection: "\uAD6C\uBD84\uC120",
+  settingHorizontalRulesName: "\uAC00\uB85C\uC904(---) \uC81C\uAC70",
+  settingHorizontalRulesDesc: "\uBCF8\uBB38\uC758 \uAC00\uB85C\uC904(---)\uC744 \uC81C\uAC70\uD569\uB2C8\uB2E4 (YAML frontmatter\uB294 \uBCF4\uC874\uB428).",
+  settingAdditionalSection: "\uCD94\uAC00 \uC635\uC158",
+  settingTrimLeadingName: "\uBB38\uC11C \uC2DC\uC791 \uBD80\uBD84 \uBE48 \uC904 \uC81C\uAC70",
+  settingTrimLeadingDesc: "\uBB38\uC11C \uB9E8 \uC704\uC758 \uBE48 \uC904\uC744 \uC81C\uAC70\uD569\uB2C8\uB2E4.",
+  settingTrimTrailingName: "\uBB38\uC11C \uB05D \uBE48 \uC904 \uC81C\uAC70",
+  settingTrimTrailingDesc: "\uBB38\uC11C \uB9E8 \uB05D\uC758 \uBD88\uD544\uC694\uD55C \uBE48 \uC904\uC744 \uC81C\uAC70\uD569\uB2C8\uB2E4."
+};
+var pt = {
+  ribbonIconTitle: "Limpar linhas vazias",
+  cmdCleanNote: "Limpar linhas vazias na nota ativa",
+  cmdCleanSelection: "Limpar linhas vazias na sele\xE7\xE3o",
+  noticeNoActiveNote: "Nenhuma nota Markdown ativa",
+  noticeCleanSuccess: "Linhas vazias limpas com sucesso",
+  noticeNoCleanNeeded: "Formata\xE7\xE3o n\xE3o necess\xE1ria",
+  noticeSelectTextFirst: "Por favor, selecione o texto a ser formatado primeiro",
+  noticeSelectionSuccess: "Sele\xE7\xE3o formatada com sucesso",
+  noticeSelectionNoCleanNeeded: "Formata\xE7\xE3o da sele\xE7\xE3o n\xE3o necess\xE1ria",
+  settingsTitle: "Configura\xE7\xF5es do Clean Empty Lines",
+  settingDuplicateName: "Remover linhas vazias duplicadas",
+  settingDuplicateDesc: "Reduz duas ou mais linhas vazias consecutivas a uma \xFAnica.",
+  settingHeadingsSection: "Cabe\xE7alhos",
+  settingHeadingBeforeName: "Linha vazia antes dos cabe\xE7alhos",
+  settingHeadingBeforeDesc: "Garante uma linha vazia antes dos cabe\xE7alhos (exceto no in\xEDcio do documento).",
+  settingHeadingAfterName: "Linha vazia ap\xF3s os cabe\xE7alhos",
+  settingHeadingAfterDesc: "Garante uma linha vazia ap\xF3s os cabe\xE7alhos.",
+  settingHeadingConsecutiveName: "Linha vazia entre cabe\xE7alhos consecutivos",
+  settingHeadingConsecutiveDesc: "Insere uma linha vazia entre cabe\xE7alhos adjacentes (ex. entre # e ##).",
+  settingListsSection: "Listas",
+  settingListsName: "Remover linhas vazias entre itens de lista",
+  settingListsDesc: "Torna as listas compactas removendo linhas vazias entre os itens.",
+  settingSeparatorsSection: "Separadores",
+  settingHorizontalRulesName: "Remover linhas horizontais (---)",
+  settingHorizontalRulesDesc: "Remove linhas divis\xF3rias (---) no corpo do texto (o frontmatter YAML \xE9 mantido).",
+  settingAdditionalSection: "Op\xE7\xF5es adicionais",
+  settingTrimLeadingName: "Remover linhas vazias no in\xEDcio",
+  settingTrimLeadingDesc: "Remove linhas vazias no in\xEDcio do documento.",
+  settingTrimTrailingName: "Remover linhas vazias no final",
+  settingTrimTrailingDesc: "Remove linhas vazias sobressalentes no final do documento."
+};
+var localeMap = {
+  en,
+  ru,
+  de,
+  fr,
+  es,
+  zh,
+  "zh-cn": zh,
+  "zh-tw": zh,
+  ja,
+  ko,
+  pt,
+  "pt-br": pt
+};
+function getLocale() {
+  try {
+    if (typeof window !== "undefined" && window.localStorage) {
+      const stored = window.localStorage.getItem("language");
+      if (stored) return stored.toLowerCase();
+    }
+  } catch (e) {
+  }
+  try {
+    if (typeof window !== "undefined" && window.moment && typeof window.moment.locale === "function") {
+      return window.moment.locale().toLowerCase();
+    }
+  } catch (e) {
+  }
+  return "en";
+}
+function t(key, customLocale) {
+  const current = (customLocale || getLocale()).toLowerCase();
+  if (localeMap[current] && localeMap[current][key]) {
+    return localeMap[current][key];
+  }
+  const prefix = current.split("-")[0];
+  if (localeMap[prefix] && localeMap[prefix][key]) {
+    return localeMap[prefix][key];
+  }
+  return en[key] || key;
+}
+
+// src/settings.ts
 var CleanEmptyLinesSettingTab = class extends import_obsidian.PluginSettingTab {
   constructor(app, plugin) {
     super(app, plugin);
@@ -352,54 +685,54 @@ var CleanEmptyLinesSettingTab = class extends import_obsidian.PluginSettingTab {
   display() {
     const { containerEl } = this;
     containerEl.empty();
-    containerEl.createEl("h2", { text: "\u041D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0438 Clean Empty Lines" });
-    new import_obsidian.Setting(containerEl).setName("\u0423\u0434\u0430\u043B\u044F\u0442\u044C \u0434\u0443\u0431\u043B\u0438\u0440\u0443\u044E\u0449\u0438\u0435\u0441\u044F \u043F\u0443\u0441\u0442\u044B\u0435 \u0441\u0442\u0440\u043E\u043A\u0438").setDesc("\u0421\u0445\u043B\u043E\u043F\u044B\u0432\u0430\u0435\u0442 \u043D\u0435\u0441\u043A\u043E\u043B\u044C\u043A\u043E \u043F\u043E\u0434\u0440\u044F\u0434 \u0438\u0434\u0443\u0449\u0438\u0445 \u043F\u0443\u0441\u0442\u044B\u0445 \u0441\u0442\u0440\u043E\u043A \u0432 \u043E\u0434\u043D\u0443.").addToggle(
+    containerEl.createEl("h2", { text: t("settingsTitle") });
+    new import_obsidian.Setting(containerEl).setName(t("settingDuplicateName")).setDesc(t("settingDuplicateDesc")).addToggle(
       (toggle) => toggle.setValue(this.plugin.settings.removeDuplicateEmptyLines).onChange(async (value) => {
         this.plugin.settings.removeDuplicateEmptyLines = value;
         await this.plugin.saveSettings();
       })
     );
-    containerEl.createEl("h3", { text: "\u0417\u0430\u0433\u043E\u043B\u043E\u0432\u043A\u0438" });
-    new import_obsidian.Setting(containerEl).setName("\u041F\u0443\u0441\u0442\u0430\u044F \u0441\u0442\u0440\u043E\u043A\u0430 \u043F\u0435\u0440\u0435\u0434 \u0437\u0430\u0433\u043E\u043B\u043E\u0432\u043A\u0430\u043C\u0438").setDesc("\u0413\u0430\u0440\u0430\u043D\u0442\u0438\u0440\u0443\u0435\u0442 \u043E\u0434\u043D\u0443 \u043F\u0443\u0441\u0442\u0443\u044E \u0441\u0442\u0440\u043E\u043A\u0443 \u043F\u0435\u0440\u0435\u0434 \u0437\u0430\u0433\u043E\u043B\u043E\u0432\u043A\u043E\u043C (\u043A\u0440\u043E\u043C\u0435 \u0441\u0430\u043C\u043E\u0433\u043E \u043D\u0430\u0447\u0430\u043B\u0430 \u0444\u0430\u0439\u043B\u0430).").addToggle(
+    containerEl.createEl("h3", { text: t("settingHeadingsSection") });
+    new import_obsidian.Setting(containerEl).setName(t("settingHeadingBeforeName")).setDesc(t("settingHeadingBeforeDesc")).addToggle(
       (toggle) => toggle.setValue(this.plugin.settings.ensureEmptyLineBeforeHeading).onChange(async (value) => {
         this.plugin.settings.ensureEmptyLineBeforeHeading = value;
         await this.plugin.saveSettings();
       })
     );
-    new import_obsidian.Setting(containerEl).setName("\u041F\u0443\u0441\u0442\u0430\u044F \u0441\u0442\u0440\u043E\u043A\u0430 \u043F\u043E\u0441\u043B\u0435 \u0437\u0430\u0433\u043E\u043B\u043E\u0432\u043A\u043E\u0432").setDesc("\u0413\u0430\u0440\u0430\u043D\u0442\u0438\u0440\u0443\u0435\u0442 \u043E\u0434\u043D\u0443 \u043F\u0443\u0441\u0442\u0443\u044E \u0441\u0442\u0440\u043E\u043A\u0443 \u043F\u043E\u0441\u043B\u0435 \u0437\u0430\u0433\u043E\u043B\u043E\u0432\u043A\u0430 (\u043F\u0435\u0440\u0435\u0434 \u0441\u043B\u0435\u0434\u0443\u044E\u0449\u0438\u043C \u0442\u0435\u043A\u0441\u0442\u043E\u043C).").addToggle(
+    new import_obsidian.Setting(containerEl).setName(t("settingHeadingAfterName")).setDesc(t("settingHeadingAfterDesc")).addToggle(
       (toggle) => toggle.setValue(this.plugin.settings.ensureEmptyLineAfterHeading).onChange(async (value) => {
         this.plugin.settings.ensureEmptyLineAfterHeading = value;
         await this.plugin.saveSettings();
       })
     );
-    new import_obsidian.Setting(containerEl).setName("\u041F\u0443\u0441\u0442\u0430\u044F \u0441\u0442\u0440\u043E\u043A\u0430 \u043C\u0435\u0436\u0434\u0443 \u043F\u043E\u0434\u0440\u044F\u0434 \u0438\u0434\u0443\u0449\u0438\u043C\u0438 \u0437\u0430\u0433\u043E\u043B\u043E\u0432\u043A\u0430\u043C\u0438").setDesc("\u0412\u0441\u0442\u0430\u0432\u043B\u044F\u0442\u044C \u043B\u0438 \u043F\u0443\u0441\u0442\u0443\u044E \u0441\u0442\u0440\u043E\u043A\u0443 \u043C\u0435\u0436\u0434\u0443 \u0441\u043C\u0435\u0436\u043D\u044B\u043C\u0438 \u0437\u0430\u0433\u043E\u043B\u043E\u0432\u043A\u0430\u043C\u0438 (\u043D\u0430\u043F\u0440\u0438\u043C\u0435\u0440, \u043C\u0435\u0436\u0434\u0443 # \u0438 ##).").addToggle(
+    new import_obsidian.Setting(containerEl).setName(t("settingHeadingConsecutiveName")).setDesc(t("settingHeadingConsecutiveDesc")).addToggle(
       (toggle) => toggle.setValue(this.plugin.settings.emptyLineBetweenConsecutiveHeadings).onChange(async (value) => {
         this.plugin.settings.emptyLineBetweenConsecutiveHeadings = value;
         await this.plugin.saveSettings();
       })
     );
-    containerEl.createEl("h3", { text: "\u0421\u043F\u0438\u0441\u043A\u0438" });
-    new import_obsidian.Setting(containerEl).setName("\u0423\u0434\u0430\u043B\u044F\u0442\u044C \u043F\u0443\u0441\u0442\u044B\u0435 \u0441\u0442\u0440\u043E\u043A\u0438 \u043C\u0435\u0436\u0434\u0443 \u044D\u043B\u0435\u043C\u0435\u043D\u0442\u0430\u043C\u0438 \u0441\u043F\u0438\u0441\u043A\u0430").setDesc("\u0414\u0435\u043B\u0430\u0435\u0442 \u0441\u043F\u0438\u0441\u043A\u0438 \u043A\u043E\u043C\u043F\u0430\u043A\u0442\u043D\u044B\u043C\u0438, \u0443\u0434\u0430\u043B\u044F\u044F \u043F\u0443\u0441\u0442\u044B\u0435 \u0441\u0442\u0440\u043E\u043A\u0438 \u043C\u0435\u0436\u0434\u0443 \u043F\u0443\u043D\u043A\u0442\u0430\u043C\u0438 \u0441\u043F\u0438\u0441\u043A\u043E\u0432.").addToggle(
+    containerEl.createEl("h3", { text: t("settingListsSection") });
+    new import_obsidian.Setting(containerEl).setName(t("settingListsName")).setDesc(t("settingListsDesc")).addToggle(
       (toggle) => toggle.setValue(this.plugin.settings.removeEmptyLinesInLists).onChange(async (value) => {
         this.plugin.settings.removeEmptyLinesInLists = value;
         await this.plugin.saveSettings();
       })
     );
-    containerEl.createEl("h3", { text: "\u0420\u0430\u0437\u0434\u0435\u043B\u0438\u0442\u0435\u043B\u0438" });
-    new import_obsidian.Setting(containerEl).setName("\u0423\u0434\u0430\u043B\u044F\u0442\u044C \u0433\u043E\u0440\u0438\u0437\u043E\u043D\u0442\u0430\u043B\u044C\u043D\u044B\u0435 \u043B\u0438\u043D\u0438\u0438 (---)").setDesc("\u0423\u0434\u0430\u043B\u044F\u0435\u0442 \u0440\u0430\u0437\u0434\u0435\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u044B\u0435 \u043B\u0438\u043D\u0438\u0438 (thematic breaks / horizontal rules), \u043A\u0440\u043E\u043C\u0435 YAML frontmatter.").addToggle(
+    containerEl.createEl("h3", { text: t("settingSeparatorsSection") });
+    new import_obsidian.Setting(containerEl).setName(t("settingHorizontalRulesName")).setDesc(t("settingHorizontalRulesDesc")).addToggle(
       (toggle) => toggle.setValue(this.plugin.settings.removeHorizontalRules).onChange(async (value) => {
         this.plugin.settings.removeHorizontalRules = value;
         await this.plugin.saveSettings();
       })
     );
-    containerEl.createEl("h3", { text: "\u0414\u043E\u043F\u043E\u043B\u043D\u0438\u0442\u0435\u043B\u044C\u043D\u043E" });
-    new import_obsidian.Setting(containerEl).setName("\u0423\u0434\u0430\u043B\u044F\u0442\u044C \u043F\u0443\u0441\u0442\u044B\u0435 \u0441\u0442\u0440\u043E\u043A\u0438 \u0432 \u043D\u0430\u0447\u0430\u043B\u0435 \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u0430").setDesc("\u0423\u0434\u0430\u043B\u044F\u0435\u0442 \u043F\u0443\u0441\u0442\u044B\u0435 \u0441\u0442\u0440\u043E\u043A\u0438 \u0432 \u0441\u0430\u043C\u043E\u043C \u0432\u0435\u0440\u0445\u0443 \u0444\u0430\u0439\u043B\u0430 \u043F\u0435\u0440\u0435\u0434 \u043F\u0435\u0440\u0432\u044B\u043C \u0441\u043E\u0434\u0435\u0440\u0436\u0438\u043C\u044B\u043C.").addToggle(
+    containerEl.createEl("h3", { text: t("settingAdditionalSection") });
+    new import_obsidian.Setting(containerEl).setName(t("settingTrimLeadingName")).setDesc(t("settingTrimLeadingDesc")).addToggle(
       (toggle) => toggle.setValue(this.plugin.settings.trimLeadingEmptyLines).onChange(async (value) => {
         this.plugin.settings.trimLeadingEmptyLines = value;
         await this.plugin.saveSettings();
       })
     );
-    new import_obsidian.Setting(containerEl).setName("\u041E\u0447\u0438\u0449\u0430\u0442\u044C \u043B\u0438\u0448\u043D\u0438\u0435 \u043F\u0443\u0441\u0442\u044B\u0435 \u0441\u0442\u0440\u043E\u043A\u0438 \u0432 \u043A\u043E\u043D\u0446\u0435 \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u0430").setDesc("\u0423\u0434\u0430\u043B\u044F\u0435\u0442 \u043B\u0438\u0448\u043D\u0438\u0435 \u043F\u0443\u0441\u0442\u044B\u0435 \u0441\u0442\u0440\u043E\u043A\u0438 \u0432 \u0441\u0430\u043C\u043E\u043C \u043A\u043E\u043D\u0446\u0435 \u0444\u0430\u0439\u043B\u0430.").addToggle(
+    new import_obsidian.Setting(containerEl).setName(t("settingTrimTrailingName")).setDesc(t("settingTrimTrailingDesc")).addToggle(
       (toggle) => toggle.setValue(this.plugin.settings.trimTrailingEmptyLines).onChange(async (value) => {
         this.plugin.settings.trimTrailingEmptyLines = value;
         await this.plugin.saveSettings();
@@ -416,24 +749,24 @@ var CleanEmptyLinesPlugin = class extends import_obsidian2.Plugin {
   }
   async onload() {
     await this.loadSettings();
-    this.addRibbonIcon("list-checks", "\u041E\u0447\u0438\u0441\u0442\u0438\u0442\u044C \u043F\u0443\u0441\u0442\u044B\u0435 \u0441\u0442\u0440\u043E\u043A\u0438", () => {
+    this.addRibbonIcon("list-checks", t("ribbonIconTitle"), () => {
       const activeView = this.app.workspace.getActiveViewOfType(import_obsidian2.MarkdownView);
       if (activeView) {
         this.formatEditor(activeView.editor);
       } else {
-        new import_obsidian2.Notice("\u041D\u0435\u0442 \u0430\u043A\u0442\u0438\u0432\u043D\u043E\u0439 Markdown-\u0437\u0430\u043C\u0435\u0442\u043A\u0438");
+        new import_obsidian2.Notice(t("noticeNoActiveNote"));
       }
     });
     this.addCommand({
       id: "clean-empty-lines-note",
-      name: "\u041E\u0447\u0438\u0441\u0442\u0438\u0442\u044C \u043F\u0443\u0441\u0442\u044B\u0435 \u0441\u0442\u0440\u043E\u043A\u0438 \u0432 \u0430\u043A\u0442\u0438\u0432\u043D\u043E\u0439 \u0437\u0430\u043C\u0435\u0442\u043A\u0435",
+      name: t("cmdCleanNote"),
       editorCallback: (editor) => {
         this.formatEditor(editor);
       }
     });
     this.addCommand({
       id: "clean-empty-lines-selection",
-      name: "\u041E\u0447\u0438\u0441\u0442\u0438\u0442\u044C \u043F\u0443\u0441\u0442\u044B\u0435 \u0441\u0442\u0440\u043E\u043A\u0438 \u0432 \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u043D\u043E\u043C \u0444\u0440\u0430\u0433\u043C\u0435\u043D\u0442\u0435",
+      name: t("cmdCleanSelection"),
       editorCallback: (editor) => {
         this.formatSelection(editor);
       }
@@ -451,23 +784,23 @@ var CleanEmptyLinesPlugin = class extends import_obsidian2.Plugin {
         line: Math.min(cursor.line, totalLines - 1),
         ch: cursor.ch
       });
-      new import_obsidian2.Notice("\u041F\u0443\u0441\u0442\u044B\u0435 \u0441\u0442\u0440\u043E\u043A\u0438 \u0443\u0441\u043F\u0435\u0448\u043D\u043E \u043E\u0442\u0444\u043E\u0440\u043C\u0430\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u044B");
+      new import_obsidian2.Notice(t("noticeCleanSuccess"));
     } else {
-      new import_obsidian2.Notice("\u0424\u043E\u0440\u043C\u0430\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u043D\u0435 \u0442\u0440\u0435\u0431\u0443\u0435\u0442\u0441\u044F");
+      new import_obsidian2.Notice(t("noticeNoCleanNeeded"));
     }
   }
   formatSelection(editor) {
     if (!editor.somethingSelected()) {
-      new import_obsidian2.Notice("\u0421\u043D\u0430\u0447\u0430\u043B\u0430 \u0432\u044B\u0434\u0435\u043B\u0438\u0442\u0435 \u0442\u0435\u043A\u0441\u0442 \u0434\u043B\u044F \u0444\u043E\u0440\u043C\u0430\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u044F");
+      new import_obsidian2.Notice(t("noticeSelectTextFirst"));
       return;
     }
     const selection = editor.getSelection();
     const cleanedSelection = cleanEmptyLines(selection, this.settings, true);
     if (selection !== cleanedSelection) {
       editor.replaceSelection(cleanedSelection);
-      new import_obsidian2.Notice("\u0412\u044B\u0434\u0435\u043B\u0435\u043D\u043D\u044B\u0439 \u0444\u0440\u0430\u0433\u043C\u0435\u043D\u0442 \u043E\u0442\u0444\u043E\u0440\u043C\u0430\u0442\u0438\u0440\u043E\u0432\u0430\u043D");
+      new import_obsidian2.Notice(t("noticeSelectionSuccess"));
     } else {
-      new import_obsidian2.Notice("\u0412 \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u0438\u0438 \u0444\u043E\u0440\u043C\u0430\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u043D\u0435 \u0442\u0440\u0435\u0431\u0443\u0435\u0442\u0441\u044F");
+      new import_obsidian2.Notice(t("noticeSelectionNoCleanNeeded"));
     }
   }
   async loadSettings() {

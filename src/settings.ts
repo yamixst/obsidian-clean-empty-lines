@@ -1,5 +1,6 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
 import type CleanEmptyLinesPlugin from "./main";
+import { t } from "./i18n";
 
 export class CleanEmptyLinesSettingTab extends PluginSettingTab {
   plugin: CleanEmptyLinesPlugin;
@@ -13,11 +14,11 @@ export class CleanEmptyLinesSettingTab extends PluginSettingTab {
     const { containerEl } = this;
     containerEl.empty();
 
-    containerEl.createEl("h2", { text: "Настройки Clean Empty Lines" });
+    containerEl.createEl("h2", { text: t("settingsTitle") });
 
     new Setting(containerEl)
-      .setName("Удалять дублирующиеся пустые строки")
-      .setDesc("Схлопывает несколько подряд идущих пустых строк в одну.")
+      .setName(t("settingDuplicateName"))
+      .setDesc(t("settingDuplicateDesc"))
       .addToggle((toggle) =>
         toggle
           .setValue(this.plugin.settings.removeDuplicateEmptyLines)
@@ -27,11 +28,11 @@ export class CleanEmptyLinesSettingTab extends PluginSettingTab {
           })
       );
 
-    containerEl.createEl("h3", { text: "Заголовки" });
+    containerEl.createEl("h3", { text: t("settingHeadingsSection") });
 
     new Setting(containerEl)
-      .setName("Пустая строка перед заголовками")
-      .setDesc("Гарантирует одну пустую строку перед заголовком (кроме самого начала файла).")
+      .setName(t("settingHeadingBeforeName"))
+      .setDesc(t("settingHeadingBeforeDesc"))
       .addToggle((toggle) =>
         toggle
           .setValue(this.plugin.settings.ensureEmptyLineBeforeHeading)
@@ -42,8 +43,8 @@ export class CleanEmptyLinesSettingTab extends PluginSettingTab {
       );
 
     new Setting(containerEl)
-      .setName("Пустая строка после заголовков")
-      .setDesc("Гарантирует одну пустую строку после заголовка (перед следующим текстом).")
+      .setName(t("settingHeadingAfterName"))
+      .setDesc(t("settingHeadingAfterDesc"))
       .addToggle((toggle) =>
         toggle
           .setValue(this.plugin.settings.ensureEmptyLineAfterHeading)
@@ -54,8 +55,8 @@ export class CleanEmptyLinesSettingTab extends PluginSettingTab {
       );
 
     new Setting(containerEl)
-      .setName("Пустая строка между подряд идущими заголовками")
-      .setDesc("Вставлять ли пустую строку между смежными заголовками (например, между # и ##).")
+      .setName(t("settingHeadingConsecutiveName"))
+      .setDesc(t("settingHeadingConsecutiveDesc"))
       .addToggle((toggle) =>
         toggle
           .setValue(this.plugin.settings.emptyLineBetweenConsecutiveHeadings)
@@ -65,11 +66,11 @@ export class CleanEmptyLinesSettingTab extends PluginSettingTab {
           })
       );
 
-    containerEl.createEl("h3", { text: "Списки" });
+    containerEl.createEl("h3", { text: t("settingListsSection") });
 
     new Setting(containerEl)
-      .setName("Удалять пустые строки между элементами списка")
-      .setDesc("Делает списки компактными, удаляя пустые строки между пунктами списков.")
+      .setName(t("settingListsName"))
+      .setDesc(t("settingListsDesc"))
       .addToggle((toggle) =>
         toggle
           .setValue(this.plugin.settings.removeEmptyLinesInLists)
@@ -79,11 +80,11 @@ export class CleanEmptyLinesSettingTab extends PluginSettingTab {
           })
       );
 
-    containerEl.createEl("h3", { text: "Разделители" });
+    containerEl.createEl("h3", { text: t("settingSeparatorsSection") });
 
     new Setting(containerEl)
-      .setName("Удалять горизонтальные линии (---)")
-      .setDesc("Удаляет разделительные линии (thematic breaks / horizontal rules), кроме YAML frontmatter.")
+      .setName(t("settingHorizontalRulesName"))
+      .setDesc(t("settingHorizontalRulesDesc"))
       .addToggle((toggle) =>
         toggle
           .setValue(this.plugin.settings.removeHorizontalRules)
@@ -93,11 +94,11 @@ export class CleanEmptyLinesSettingTab extends PluginSettingTab {
           })
       );
 
-    containerEl.createEl("h3", { text: "Дополнительно" });
+    containerEl.createEl("h3", { text: t("settingAdditionalSection") });
 
     new Setting(containerEl)
-      .setName("Удалять пустые строки в начале документа")
-      .setDesc("Удаляет пустые строки в самом верху файла перед первым содержимым.")
+      .setName(t("settingTrimLeadingName"))
+      .setDesc(t("settingTrimLeadingDesc"))
       .addToggle((toggle) =>
         toggle
           .setValue(this.plugin.settings.trimLeadingEmptyLines)
@@ -108,8 +109,8 @@ export class CleanEmptyLinesSettingTab extends PluginSettingTab {
       );
 
     new Setting(containerEl)
-      .setName("Очищать лишние пустые строки в конце документа")
-      .setDesc("Удаляет лишние пустые строки в самом конце файла.")
+      .setName(t("settingTrimTrailingName"))
+      .setDesc(t("settingTrimTrailingDesc"))
       .addToggle((toggle) =>
         toggle
           .setValue(this.plugin.settings.trimTrailingEmptyLines)
