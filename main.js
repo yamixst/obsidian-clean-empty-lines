@@ -676,6 +676,111 @@ var CleanEmptyLinesSettingTab = class extends import_obsidian2.PluginSettingTab 
     super(app, plugin);
     this.plugin = plugin;
   }
+  getControlValue(key) {
+    return this.plugin.settings[key];
+  }
+  async setControlValue(key, value) {
+    this.plugin.settings[key] = value;
+    await this.plugin.saveSettings();
+  }
+  getSettingDefinitions() {
+    return [
+      {
+        type: "group",
+        heading: t("settingsTitle"),
+        items: [
+          {
+            name: t("settingDuplicateName"),
+            desc: t("settingDuplicateDesc"),
+            control: {
+              type: "toggle",
+              key: "removeDuplicateEmptyLines"
+            }
+          }
+        ]
+      },
+      {
+        type: "group",
+        heading: t("settingHeadingsSection"),
+        items: [
+          {
+            name: t("settingHeadingBeforeName"),
+            desc: t("settingHeadingBeforeDesc"),
+            control: {
+              type: "toggle",
+              key: "ensureEmptyLineBeforeHeading"
+            }
+          },
+          {
+            name: t("settingHeadingAfterName"),
+            desc: t("settingHeadingAfterDesc"),
+            control: {
+              type: "toggle",
+              key: "ensureEmptyLineAfterHeading"
+            }
+          },
+          {
+            name: t("settingHeadingConsecutiveName"),
+            desc: t("settingHeadingConsecutiveDesc"),
+            control: {
+              type: "toggle",
+              key: "emptyLineBetweenConsecutiveHeadings"
+            }
+          }
+        ]
+      },
+      {
+        type: "group",
+        heading: t("settingListsSection"),
+        items: [
+          {
+            name: t("settingListsName"),
+            desc: t("settingListsDesc"),
+            control: {
+              type: "toggle",
+              key: "removeEmptyLinesInLists"
+            }
+          }
+        ]
+      },
+      {
+        type: "group",
+        heading: t("settingSeparatorsSection"),
+        items: [
+          {
+            name: t("settingHorizontalRulesName"),
+            desc: t("settingHorizontalRulesDesc"),
+            control: {
+              type: "toggle",
+              key: "removeHorizontalRules"
+            }
+          }
+        ]
+      },
+      {
+        type: "group",
+        heading: t("settingAdditionalSection"),
+        items: [
+          {
+            name: t("settingTrimLeadingName"),
+            desc: t("settingTrimLeadingDesc"),
+            control: {
+              type: "toggle",
+              key: "trimLeadingEmptyLines"
+            }
+          },
+          {
+            name: t("settingTrimTrailingName"),
+            desc: t("settingTrimTrailingDesc"),
+            control: {
+              type: "toggle",
+              key: "trimTrailingEmptyLines"
+            }
+          }
+        ]
+      }
+    ];
+  }
   display() {
     const { containerEl } = this;
     containerEl.empty();

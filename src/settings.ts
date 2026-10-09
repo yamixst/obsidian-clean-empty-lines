@@ -1,4 +1,5 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
+import type { SettingDefinitionItem } from "obsidian";
 import type CleanEmptyLinesPlugin from "./main";
 import { t } from "./i18n";
 
@@ -8,6 +9,114 @@ export class CleanEmptyLinesSettingTab extends PluginSettingTab {
   constructor(app: App, plugin: CleanEmptyLinesPlugin) {
     super(app, plugin);
     this.plugin = plugin;
+  }
+
+  override getControlValue(key: string): unknown {
+    return (this.plugin.settings as Record<string, unknown>)[key];
+  }
+
+  override async setControlValue(key: string, value: unknown): Promise<void> {
+    (this.plugin.settings as Record<string, unknown>)[key] = value;
+    await this.plugin.saveSettings();
+  }
+
+  override getSettingDefinitions(): SettingDefinitionItem[] {
+    return [
+      {
+        type: "group",
+        heading: t("settingsTitle"),
+        items: [
+          {
+            name: t("settingDuplicateName"),
+            desc: t("settingDuplicateDesc"),
+            control: {
+              type: "toggle",
+              key: "removeDuplicateEmptyLines",
+            },
+          },
+        ],
+      },
+      {
+        type: "group",
+        heading: t("settingHeadingsSection"),
+        items: [
+          {
+            name: t("settingHeadingBeforeName"),
+            desc: t("settingHeadingBeforeDesc"),
+            control: {
+              type: "toggle",
+              key: "ensureEmptyLineBeforeHeading",
+            },
+          },
+          {
+            name: t("settingHeadingAfterName"),
+            desc: t("settingHeadingAfterDesc"),
+            control: {
+              type: "toggle",
+              key: "ensureEmptyLineAfterHeading",
+            },
+          },
+          {
+            name: t("settingHeadingConsecutiveName"),
+            desc: t("settingHeadingConsecutiveDesc"),
+            control: {
+              type: "toggle",
+              key: "emptyLineBetweenConsecutiveHeadings",
+            },
+          },
+        ],
+      },
+      {
+        type: "group",
+        heading: t("settingListsSection"),
+        items: [
+          {
+            name: t("settingListsName"),
+            desc: t("settingListsDesc"),
+            control: {
+              type: "toggle",
+              key: "removeEmptyLinesInLists",
+            },
+          },
+        ],
+      },
+      {
+        type: "group",
+        heading: t("settingSeparatorsSection"),
+        items: [
+          {
+            name: t("settingHorizontalRulesName"),
+            desc: t("settingHorizontalRulesDesc"),
+            control: {
+              type: "toggle",
+              key: "removeHorizontalRules",
+            },
+          },
+        ],
+      },
+      {
+        type: "group",
+        heading: t("settingAdditionalSection"),
+        items: [
+          {
+            name: t("settingTrimLeadingName"),
+            desc: t("settingTrimLeadingDesc"),
+            control: {
+              type: "toggle",
+              key: "trimLeadingEmptyLines",
+            },
+          },
+          {
+            name: t("settingTrimTrailingName"),
+            desc: t("settingTrimTrailingDesc"),
+            control: {
+              type: "toggle",
+              key: "trimTrailingEmptyLines",
+            },
+          },
+        ],
+      },
+    ];
   }
 
   display(): void {
