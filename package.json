@@ -1,6 +1,6 @@
 {
   "name": "obsidian-clean-empty-lines",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Clean duplicate empty lines, ensure empty lines around headings, and remove empty lines between list items in Obsidian.",
   "main": "main.js",
   "scripts": {

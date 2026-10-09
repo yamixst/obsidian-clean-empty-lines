@@ -654,7 +654,7 @@ function getLocale() {
     if (typeof lang === "string" && lang.length > 0) {
       return lang.toLowerCase();
     }
-  } catch (_err) {
+  } catch (e) {
   }
   return "en";
 }

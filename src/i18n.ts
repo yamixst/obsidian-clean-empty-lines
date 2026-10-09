@@ -329,7 +329,7 @@ export function getLocale(): string {
     if (typeof lang === "string" && lang.length > 0) {
       return lang.toLowerCase();
     }
-  } catch (_err) {
+  } catch {
     // Fall back to default English
   }
 
