@@ -9,8 +9,6 @@ An [Obsidian](https://obsidian.md) plugin that tidies up blank lines and separat
 - **Protected blocks:** Code blocks (```` ``` ````), math formulas (`$$`), and frontmatter are completely safe and untouched.
 - **Multilingual support:** English (default), Russian, German, French, Spanish, Simplified Chinese, Japanese, Korean, Portuguese.
 
----
-
 ## Installation
 
 ### From Obsidian Community Plugins
@@ -27,8 +25,6 @@ An [Obsidian](https://obsidian.md) plugin that tidies up blank lines and separat
 4. Copy `manifest.json` and `main.js` into that directory.
 5. In Obsidian, go to **Settings** -> **Community plugins**, reload, and enable **Clean Empty Lines**.
 
----
-
 ## Usage
 
 1. **Command Palette (`Ctrl/Cmd + P`):**
@@ -36,8 +32,6 @@ An [Obsidian](https://obsidian.md) plugin that tidies up blank lines and separat
    - `Clean empty lines in selection` — Formats only the selected text.
 2. **Ribbon Icon:**
    - Click the check-list icon on the left ribbon to clean the current note with a single click.
-
----
 
 ## Settings
 
@@ -51,8 +45,6 @@ Customize which formatting rules to run:
 - **Trim leading empty lines** (default: On)
 - **Trim trailing empty lines** (default: On)
 
----
-
 ## Supported Languages (i18n)
 
 The plugin automatically adapts to Obsidian's active interface language:
@@ -65,8 +57,6 @@ The plugin automatically adapts to Obsidian's active interface language:
 - Japanese (`ja`)
 - Korean (`ko`)
 - Portuguese (`pt` / `pt-br`)
-
----
 
 ## Development & Testing
 
